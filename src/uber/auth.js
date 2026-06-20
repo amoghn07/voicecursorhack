@@ -2,7 +2,11 @@
 const AUTHORIZE_URL = "https://sandbox-login.uber.com/oauth/v2/authorize";
 const TOKEN_URL = "https://sandbox-login.uber.com/oauth/v2/token";
 
-const DEFAULT_SCOPES = ["request", "profile"];
+// This app's sandbox only has the Partner Loyalty Link Account scope granted —
+// NOT the Ride Request "request" scope, which Uber no longer issues to new/
+// sandbox third-party apps. This OAuth flow can authenticate a user and link
+// their account, but cannot place real ride requests on their behalf.
+const DEFAULT_SCOPES = ["partner-loyalty.link-account"];
 
 export function buildAuthorizeUrl(scopes = DEFAULT_SCOPES) {
   const { UBER_CLIENT_ID, UBER_REDIRECT_URI } = process.env;

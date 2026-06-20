@@ -67,7 +67,14 @@ const server = http.createServer(async (req, res) => {
   if (req.method === "GET" && url.pathname === "/auth/uber/callback") {
     const code = url.searchParams.get("code");
     if (!code) {
-      sendHtml(res, 400, "Missing ?code in callback.");
+      const error = url.searchParams.get("error");
+      const errorDescription = url.searchParams.get("error_description");
+      console.error("Uber callback missing code. Full query:", url.search);
+      sendHtml(
+        res,
+        400,
+        `Missing ?code in callback.<br>error: ${error}<br>error_description: ${errorDescription}`,
+      );
       return;
     }
     try {
