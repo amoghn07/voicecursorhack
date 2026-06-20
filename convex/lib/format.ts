@@ -21,7 +21,13 @@ export function quoteConfirmation(quote: Quote, dropoff: string): Reply {
   };
 }
 
-export function orderPlaced(dropoff: string): Reply {
+export function orderPlaced(dropoff: string, confirmUrl?: string): Reply {
+  if (confirmUrl) {
+    return {
+      text: `Your Uber to ${dropoff} is ready. Click here to confirm: ${confirmUrl}`,
+      speak: "emphatic",
+    };
+  }
   return {
     text: `Booked. Your Uber to ${dropoff} is confirmed and on its way. I'll let you know when the driver is close.`,
     speak: "emphatic",

@@ -1,4 +1,4 @@
-function buildUberDeepLink({ pickup, dropoff }) {
+export function buildUberDeepLink({ pickup, dropoff }) {
   const params = new URLSearchParams({ action: "setPickup" });
 
   if (pickup && pickup !== "current_location") {
@@ -13,5 +13,3 @@ function buildUberDeepLink({ pickup, dropoff }) {
 
   return `https://m.uber.com/ul/?${params.toString()}`;
 }
-
-module.exports = { buildUberDeepLink };
