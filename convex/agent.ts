@@ -35,13 +35,50 @@ export const handleInbound = action({
       (o: any) => o.status === "awaiting_confirmation",
     );
 
+    // Did our previous reply ask for a home/work address? If so, the next
+    // message is the answer to capture. (Inferred from the transcript so no
+    // extra state is needed.)
+    const lastOut = [...(context?.messages ?? [])]
+      .reverse()
+      .find((m: any) => m.direction === "out");
+    const awaitingAddressFor = lastOut?.text
+      ?.match(/don'?t have your (home|work) address saved/i)?.[1]
+      ?.toLowerCase() as "home" | "work" | undefined;
+
     // 3. Parse intent.
     const intent = parseIntent(text, { awaitingConfirmation: Boolean(pending) });
 
     // 4. Act. Each branch produces a Reply we queue (and return).
     let reply: fmt.Reply;
 
-    if (intent.kind === "confirm" && pending) {
+    if (
+      awaitingAddressFor &&
+      intent.kind !== "order" &&
+      intent.kind !== "confirm" &&
+      intent.kind !== "cancel"
+    ) {
+      // User is answering "what's your <label> address?" — save it, then quote
+      // a ride to it so the flow continues without re-asking.
+      const address = text.trim();
+      await ctx.runMutation(internal.messages.savePref, {
+        conversationId,
+        key: awaitingAddressFor,
+        value: address,
+      });
+      const connector = getConnector(UBER)!;
+      const quote = await connector.quote(
+        { dropoff: address },
+        { prefs: { ...prefs, [awaitingAddressFor]: address } },
+      );
+      await ctx.runMutation(internal.orders.createOrder, {
+        conversationId,
+        serviceKey: UBER,
+        params: { dropoff: address, dropoffLabel: awaitingAddressFor },
+        quote,
+        status: "awaiting_confirmation",
+      });
+      reply = fmt.addressSavedQuote(quote, awaitingAddressFor);
+    } else if (intent.kind === "confirm" && pending) {
       const connector = getConnector(pending.serviceKey)!;
       const { externalId } = await connector.place(pending.params, { prefs });
       await ctx.runMutation(internal.orders.transitionOrder, {

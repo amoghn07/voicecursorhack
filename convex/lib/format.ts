@@ -21,6 +21,11 @@ export function quoteConfirmation(quote: Quote, dropoff: string): Reply {
   };
 }
 
+export function addressSavedQuote(quote: Quote, label: string): Reply {
+  const base = quoteConfirmation(quote, label);
+  return { text: `Saved your ${label} address. ${base.text}`, speak: base.speak };
+}
+
 export function orderPlaced(dropoff: string): Reply {
   return {
     text: `Booked. Your Uber to ${dropoff} is confirmed and on its way. I'll let you know when the driver is close.`,
