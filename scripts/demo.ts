@@ -2,7 +2,8 @@
 // Hits the live HTTP contract on …convex.site exactly as Voice Cursor + Photon
 // would, but without any device. Walks the full quote → confirm → place flow.
 //
-//   CONVEX_SITE_URL=… API_KEY=… npx tsx scripts/demo.ts
+//   npm run demo        (reads CONVEX_SITE_URL / API_KEY from .env)
+import "dotenv/config";
 const site = process.env.CONVEX_SITE_URL;
 if (!site) throw new Error("Set CONVEX_SITE_URL (https://<deployment>.convex.site)");
 const apiKey = process.env.API_KEY ?? "";
