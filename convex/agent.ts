@@ -43,14 +43,14 @@ export const handleInbound = action({
 
     if (intent.kind === "confirm" && pending) {
       const connector = getConnector(pending.serviceKey)!;
-      const { externalId } = await connector.place(pending.params, { prefs });
+      const { externalId, confirmUrl } = await connector.place(pending.params, { prefs });
       await ctx.runMutation(internal.orders.transitionOrder, {
         orderId: pending._id,
         status: "placed",
         externalId,
         note: "user confirmed",
       });
-      reply = fmt.orderPlaced(pending.params?.dropoffLabel ?? "your destination");
+      reply = fmt.orderPlaced(pending.params?.dropoffLabel ?? "your destination", confirmUrl);
     } else if (intent.kind === "cancel" && pending) {
       await ctx.runMutation(internal.orders.transitionOrder, {
         orderId: pending._id,
