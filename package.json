@@ -1,0 +1,14 @@
+{
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc && node dist/index.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "spectrum-ts": "^5.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3"
+  }
+}
