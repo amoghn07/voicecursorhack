@@ -1,15 +1,16 @@
 // Standalone HTTP service for the Convex Uber connector (convex/services/uber.ts).
 // Run this and point Convex at it via: npx convex env set UBER_API_BASE_URL <this-url>
 //
-// Two ride-placement paths:
-//   1. Real Uber sandbox OAuth (preferred when authorized) — see /auth/uber/start.
-//   2. Uber Universal Deep Link fallback (no API key needed) — used automatically
-//      if no user has authorized the app yet, or if the real request fails.
+// /place always returns an Uber Universal Deep Link (no API key needed) — this
+// is the chosen integration path. Uber does not grant the Ride Request API's
+// "request" scope to this (or most third-party/sandbox) apps; this app's OAuth
+// grant is limited to partner-loyalty.link-account, which cannot book rides.
+// /auth/uber/* and rideRequest.js are kept as reference scaffolding for if
+// broader API access is ever granted — they are not on the active path.
 import http from "node:http";
 import "dotenv/config";
 import { buildUberDeepLink } from "./deepLink.js";
 import { buildAuthorizeUrl, exchangeCodeForToken } from "./auth.js";
-import { requestRide } from "./rideRequest.js";
 
 // Defaults to 3000 to match the redirect URI (localhost:3000/auth/uber/callback)
 // registered in the Uber developer dashboard. Override only if you also update
@@ -117,23 +118,6 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname === "/place") {
     const pickup = body.pickup;
     const dropoff = String(body.dropoff ?? "");
-
-    if (userAccessToken) {
-      try {
-        const result = await requestRide({
-          accessToken: userAccessToken,
-          startAddress: pickup,
-          endAddress: dropoff,
-        });
-        const externalId = result.request_id ?? `uber_${Date.now()}`;
-        orders.set(externalId, { pickup, dropoff, state: "placed", real: true });
-        sendJson(res, 200, { externalId });
-        return;
-      } catch (err) {
-        console.error("Real ride request failed, falling back to deep link:", err.message);
-      }
-    }
-
     const confirmUrl = buildUberDeepLink({ pickup, dropoff });
     const externalId = `uber_${Date.now()}_${Math.round(Math.random() * 1e6)}`;
     orders.set(externalId, { pickup, dropoff, confirmUrl, state: "placed" });
