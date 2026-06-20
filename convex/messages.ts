@@ -133,6 +133,22 @@ export const markSpoken = mutation({
   },
 });
 
+/** Persist a saved address (home/work) onto a conversation's contact prefs. */
+export const savePref = internalMutation({
+  args: {
+    conversationId: v.id("conversations"),
+    key: v.union(v.literal("home"), v.literal("work")),
+    value: v.string(),
+  },
+  handler: async (ctx, { conversationId, key, value }) => {
+    const convo = await ctx.db.get(conversationId);
+    if (!convo) return;
+    const contact = await ctx.db.get(convo.contactId);
+    if (!contact) return;
+    await ctx.db.patch(contact._id, { prefs: { ...contact.prefs, [key]: value } });
+  },
+});
+
 /** Helper for actions to read a conversation's contact prefs. */
 export const getPrefs = internalQuery({
   args: { conversationId: v.id("conversations") },
