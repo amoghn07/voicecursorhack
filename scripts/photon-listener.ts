@@ -39,11 +39,13 @@ const app = await Spectrum({
 // Narrow to the iMessage provider so `space.phone` (the contact's handle) is typed.
 for await (const [space, message] of imessage(app).messages) {
   if (message.content.type !== "text") continue;
+  console.log(`[in]  ${space.phone}: ${message.content.text}`);
   // A transient relay drop on send (gRPC "Connection dropped") must not kill the
   // whole agent — log it and keep listening so the next message still works.
   try {
     const reply = await ask(space.phone, message.content.text);
     await space.send(reply);
+    console.log(`[out] ${space.phone}: ${reply}`);
   } catch (err) {
     console.error(`Failed to handle/send message from ${space.phone}:`, err);
   }
