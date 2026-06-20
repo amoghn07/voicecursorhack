@@ -47,7 +47,7 @@ export const executeServiceAction = action({
           conversationId: args.conversationId,
         });
         if (!pending) throw new Error("no open order to place");
-        const { externalId } = await connector.place(pending.params, { prefs });
+        const { externalId, confirmUrl } = await connector.place(pending.params, { prefs });
         await ctx.runMutation(internal.orders.transitionOrder, {
           orderId: pending._id,
           status: "placed",
@@ -56,7 +56,7 @@ export const executeServiceAction = action({
         return {
           orderId: pending._id,
           externalId,
-          suggestedReply: fmt.orderPlaced(pending.params?.dropoffLabel ?? "your destination"),
+          suggestedReply: fmt.orderPlaced(pending.params?.dropoffLabel ?? "your destination", confirmUrl),
         };
       }
       case "cancel": {

@@ -49,7 +49,7 @@ export interface ServiceConnector {
   displayName: string;
   toolSchema: ToolSchema;
   quote(params: Record<string, unknown>, ctx: ConnectorContext): Promise<Quote>;
-  place(params: Record<string, unknown>, ctx: ConnectorContext): Promise<{ externalId: string }>;
+  place(params: Record<string, unknown>, ctx: ConnectorContext): Promise<{ externalId: string; confirmUrl?: string }>;
   status(externalId: string, ctx: ConnectorContext): Promise<OrderStatus>;
   cancel(externalId: string, ctx: ConnectorContext): Promise<void>;
 }

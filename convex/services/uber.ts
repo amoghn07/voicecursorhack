@@ -65,8 +65,8 @@ export const uberConnector: ServiceConnector = {
     return fakeQuote(dropoff);
   },
 
-  async place(params, _ctx): Promise<{ externalId: string }> {
-    if (baseUrl()) return proxy<{ externalId: string }>("/place", params);
+  async place(params, _ctx): Promise<{ externalId: string; confirmUrl?: string }> {
+    if (baseUrl()) return proxy<{ externalId: string; confirmUrl?: string }>("/place", params);
     // Fake a stable-looking external id from the destination.
     const dropoff = String(params.dropoff ?? "ride");
     return { externalId: `uber_fake_${dropoff.replace(/\W+/g, "_").slice(0, 16)}` };

@@ -10,7 +10,8 @@
     "seed": "convex run seed:run",
     "tts": "tsx scripts/tts-helper.ts",
     "demo": "tsx scripts/demo.ts",
-    "photon": "tsx scripts/photon-listener.ts"
+    "photon": "tsx scripts/photon-listener.ts",
+    "uber-service": "node src/uber/server.js"
   },
   "dependencies": {
     "convex": "^1.17.0",
