@@ -1,16 +1,15 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "lib": ["ESNext"],
-    "types": ["node"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "strict": true,
-    "esModuleInterop": true,
     "skipLibCheck": true,
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "rootDir": ".vs/src",
-    "outDir": "dist"
+    "noEmit": true,
+    "lib": ["ESNext", "DOM"],
+    "types": ["node"]
   },
-  "include": [".vs/src/**/*.ts"]
+  "include": ["convex/**/*.ts", "scripts/**/*.ts"]
 }
