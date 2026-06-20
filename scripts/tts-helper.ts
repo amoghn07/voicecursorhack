@@ -3,7 +3,8 @@
 // aloud with macOS `say`. `emphatic` messages (price confirmations, order
 // placed/cancelled) use a slower, clearer voice. Complements VoiceOver.
 //
-//   CONVEX_URL=… API_KEY=… npx tsx scripts/tts-helper.ts
+//   npm run tts        (reads CONVEX_URL from .env)
+import "dotenv/config";
 import { execFile } from "node:child_process";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "../convex/_generated/api.js";
