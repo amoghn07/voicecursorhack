@@ -1,0 +1,24 @@
+{
+  "name": "voicecursor-concierge-backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Accessible iMessage concierge backend (Convex) — voice-driven service ordering for visually impaired users",
+  "scripts": {
+    "dev": "convex dev",
+    "deploy": "convex deploy",
+    "seed": "convex run seed:run",
+    "tts": "tsx scripts/tts-helper.ts",
+    "demo": "tsx scripts/demo.ts",
+    "photon": "tsx scripts/photon-listener.ts"
+  },
+  "dependencies": {
+    "convex": "^1.17.0",
+    "dotenv": "^17.4.2",
+    "spectrum-ts": "^5.0.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}
